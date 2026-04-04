@@ -1,26 +1,33 @@
 name: Daily AI News Report
 on:
   schedule:
-    # 8:00 AM IST is 2:30 AM UTC
     - cron: '30 2 * * *'
-  workflow_dispatch: # Allows manual trigger for testing
+  workflow_dispatch:
 
 jobs:
   report:
     runs-on: ubuntu-latest
-    container:
-      image: ghcr.io/${{ github.repository }}:latest
     steps:
-
-      - name: set lower case repo name
+      - name: Set lower case repo name
         run: |
-          echo "REPO_LC=${REPO,,}" >> ${GITHUB_ENV}
-        env:
-          REPO: '${{ github.repository }}'
+          echo "REPO_LC=${GITHUB_REPOSITORY,,}" >> ${GITHUB_ENV}
 
-      - name: Run AI News Agent
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Pull and Run AI News Agent
         env:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
           EMAIL_USER: ${{ secrets.EMAIL_USER }}
           EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
-        run: python main.py
+        run: |
+          docker pull ghcr.io/${{ env.REPO_LC }}:latest
+          docker run --rm \
+            -e GROQ_API_KEY=$GROQ_API_KEY \
+            -e EMAIL_USER=$EMAIL_USER \
+            -e EMAIL_PASS=$EMAIL_PASS \
+            ghcr.io/${{ env.REPO_LC }}:latest
