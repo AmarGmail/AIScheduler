@@ -11,6 +11,13 @@ jobs:
     container:
       image: ghcr.io/${{ github.repository }}:latest
     steps:
+
+      - name: set lower case repo name
+        run: |
+          echo "REPO_LC=${REPO,,}" >> ${GITHUB_ENV}
+        env:
+          REPO: '${{ github.repository }}'
+
       - name: Run AI News Agent
         env:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
