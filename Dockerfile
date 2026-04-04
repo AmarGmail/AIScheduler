@@ -1,19 +1,24 @@
-# Use a specific version for stability (SRE Best Practice)
-FROM ://microsoft.com
+# Use the official Python Slim image
+FROM python:3.12-slim
 
-# Set non-root user for security
-RUN useradd -m appuser
-USER appuser
-WORKDIR /home/appuser
+# Set environment variables to prevent Python from writing .pyc files
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
 
-# Install dependencies
-COPY --chown=appuser:appuser requirements.txt .
-RUN pip install --no-cache-dir --user -r requirements.txt
+WORKDIR /app
 
-# Copy source code
-COPY --chown=appuser:appuser . .
+# Install minimal system dependencies for PDF generation
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc \
+    python3-dev \
+    && rm -rf /var/lib/apt/lists/*
 
-# Ensure PATH includes local bin for the appuser
-ENV PATH="/home/appuser/.local/bin:${PATH}"
+# Install Python requirements
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
+# Copy the rest of the code
+COPY . .
+
+# Run the app
 CMD ["python", "main.py"]
