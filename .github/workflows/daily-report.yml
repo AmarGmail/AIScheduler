@@ -27,7 +27,8 @@ jobs:
         run: |
           docker pull ghcr.io/${{ env.REPO_LC }}:latest
           docker run --rm \
-            -e GROQ_API_KEY=$GROQ_API_KEY \
-            -e EMAIL_USER=$EMAIL_USER \
-            -e EMAIL_PASS=$EMAIL_PASS \
+            -e GROQ_API_KEY="${{ secrets.GROQ_API_KEY }}" \
+            -e EMAIL_USER="${{ secrets.EMAIL_USER }}" \
+            -e EMAIL_PASS="${{ secrets.EMAIL_PASS }}" \
             ghcr.io/${{ env.REPO_LC }}:latest
+
