@@ -1,32 +1,54 @@
 import os
+import yagmail
+from datetime import datetime
+from dotenv import load_dotenv
 from reportlab.lib.pagesizes import letter
 from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
-import yagmail
-from datetime import datetime
+
+load_dotenv()
 
 def create_pdf(summaries, filename="daily_news.pdf"):
+    """Generates a professional-grade PDF report."""
     doc = SimpleDocTemplate(filename, pagesize=letter)
     styles = getSampleStyleSheet()
     
-    # Custom styles for a cleaner look
+    # Custom SRE-style headers
     title_style = styles['Heading1']
     link_style = ParagraphStyle('link', parent=styles['Normal'], textColor=colors.blue, fontSize=8)
     summary_style = styles['Normal']
     
     elements = []
-    elements.append(Paragraph(f"TechCrunch Intelligence Brief - {datetime.now().strftime('%d %b %Y')}", title_style))
+    elements.append(Paragraph(f"<b>Tech Briefing</b>: {datetime.now().strftime('%d %B %Y')}", title_style))
     elements.append(Spacer(1, 12))
 
     for url, summary in summaries:
         elements.append(Paragraph(f"<b>SOURCE:</b> {url}", link_style))
-        elements.append(Spacer(1, 5))
-        elements.append(Paragraph(summary.replace('\n', '<br/>'), summary_style))
-        elements.append(Spacer(1, 20))
-        elements.append(Paragraph("<hr/>", styles['Normal'])) # Horizontal line
+        elements.append(Spacer(1, 8))
+        
+        # Cleaning AI markers if any (like **)
+        clean_summary = summary.replace('**', '').replace('\n', '<br/>')
+        elements.append(Paragraph(clean_summary, summary_style))
+        
+        elements.append(Spacer(1, 15))
+        elements.append(Paragraph("<hr width='100%' color='lightgrey'/>", styles['Normal']))
+        elements.append(Spacer(1, 10))
 
     doc.build(elements)
     return filename
 
-# send_email function remains the same
+def send_email(pdf_path):
+    """Sends the PDF via Gmail using App Passwords."""
+    user = os.getenv("EMAIL_USER")
+    password = os.getenv("EMAIL_PASS")
+    
+    if not user or not password:
+        print("❌ Email credentials missing in .env")
+        return
+
+    yag = yagmail.SMTP(user, password)
+    subject = f"Daily Tech Report - {datetime.now().strftime('%Y-%m-%d')}"
+    body = "Hello,\n\nAttached is your automated AI News Summary for today.\n\nBest,\nYour AI Agent"
+    
+    yag.send(to=user, subject=subject, contents=body, attachments=pdf_path)
