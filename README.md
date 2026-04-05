@@ -1,4 +1,4 @@
-# 🚀 AI-Powered SRE News Agent
+# 🚀 AI-Powered News Agent
 
 A **CI/CD pipeline** that scrapes TechCrunch headlines, generates AI-powered summaries using **Groq (Llama-3.1)**, and delivers a professional PDF report to your inbox.
 

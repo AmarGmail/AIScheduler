@@ -6,6 +6,7 @@ from reportlab.lib.pagesizes import letter
 from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
+import httpx
 
 load_dotenv()
 
@@ -52,3 +53,13 @@ def send_email(pdf_path):
     body = "Hello,\n\nAttached is your automated AI News Summary for today.\n\nBest,\nYour AI Agent"
     
     yag.send(to=user, subject=subject, contents=body, attachments=pdf_path)
+
+
+def send_heartbeat():
+    url = os.getenv("HEALTHCHECK_URL")
+    if url:
+        try:
+            httpx.get(url, timeout=5.0)
+            print("💓 Healthcheck heartbeat sent!")
+        except Exception as e:
+            print(f"⚠️ Heartbeat failed: {e}")

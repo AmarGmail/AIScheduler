@@ -7,6 +7,8 @@ on:
 jobs:
   report:
     runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
       - name: Set lower case repo name
         run: |
@@ -24,11 +26,12 @@ jobs:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
           EMAIL_USER: ${{ secrets.EMAIL_USER }}
           EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
+          HEALTHCHECK_URL: ${{ secrets.HEALTHCHECK_URL }} # New Secret
         run: |
           docker pull ghcr.io/${{ env.REPO_LC }}:latest
           docker run --rm \
             -e GROQ_API_KEY="${{ secrets.GROQ_API_KEY }}" \
             -e EMAIL_USER="${{ secrets.EMAIL_USER }}" \
             -e EMAIL_PASS="${{ secrets.EMAIL_PASS }}" \
+            -e HEALTHCHECK_URL="$HEALTHCHECK_URL" \
             ghcr.io/${{ env.REPO_LC }}:latest
-

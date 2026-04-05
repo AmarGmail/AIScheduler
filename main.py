@@ -53,6 +53,13 @@ def run_agent():
     else:
         print("❌ No valid summaries were generated. No email sent.")
 
+    if results:
+        pdf_file = create_pdf(results)
+        send_email(pdf_file)
+        # Ping the healthcheck only after a successful run
+        from src.reporter import send_heartbeat
+        send_heartbeat()
+
 if __name__ == "__main__":
     try:
         run_agent()
