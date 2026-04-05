@@ -1,0 +1,17 @@
+name: Cleanup Old Images
+on:
+  schedule:
+    - cron: '0 0 * * 0' # Every Sunday at midnight
+  workflow_dispatch:   # Manual trigger
+
+jobs:
+  delete-old-images:
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+    steps:
+      - name: Delete older images
+        uses: data-intuitive/reusable-workflows/.github/workflows/delete-old-images.yml@main  
+        with:
+          package-name: 'aischeduler'
+          keep-n-most-recent: 3
