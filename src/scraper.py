@@ -20,7 +20,8 @@ def get_top_5_links():
         for a in soup.find_all('a', href=True):
             url = a['href']
             # Ensure it's a direct article link and not a category/author page
-            if "://techcrunch.com" in url and url not in links:
+            # if "://techcrunch.com" in url and url not in links:
+            if "techcrunch.com/20" in url and url not in links:
                 links.append(url)
                 if len(links) >= 5: break
         return links

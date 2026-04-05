@@ -11,7 +11,22 @@ jobs:
       packages: write
       contents: read
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          
+      - name: Install Test Dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install pytest pytest-mock
+      
+      - name: Run Unit Tests
+        run: |
+          python3 -m pytest -v tests/test_logic.py
 
       - name: Set lower case repo name
         run: |
