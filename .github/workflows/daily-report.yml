@@ -7,6 +7,7 @@ on:
 jobs:
   report:
     runs-on: ubuntu-latest
+    # Best Practice: Proactive Node.js 24 migration
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
@@ -15,7 +16,8 @@ jobs:
           echo "REPO_LC=${GITHUB_REPOSITORY,,}" >> ${GITHUB_ENV}
 
       - name: Login to GHCR
-        uses: docker/login-action@v4
+        uses: docker/login-action@v3
+        with:  # <--- CRITICAL FIX: passing 
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
