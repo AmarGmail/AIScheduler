@@ -42,13 +42,14 @@ Implemented **Terraform** to manage the GitHub repository as a "Managed Resource
    ```bash
    git clone https://github.com
    pip install -r requirements.txt
-
+  ```
 2. **Infrastructure**
   ```bash
    cd terraform
    terraform init
    terraform apply -var="groq_api_key=your_key"
-
+  ```
 3. **Run Locally**
 ```bash
    python3 main.py
+```
