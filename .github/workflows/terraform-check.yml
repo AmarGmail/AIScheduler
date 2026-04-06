@@ -1,0 +1,33 @@
+name: Terraform Check
+on:
+  pull_request:
+    paths:
+      - 'terraform/**'
+  push:
+    branches: [main]
+    paths:
+      - 'terraform/**'
+
+jobs:
+  terraform-plan:
+    runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # For the provider
+      # We need our Groq key for the plan because it's a required variable
+      TF_VAR_groq_api_key: ${{ secrets.GROQ_API_KEY }}
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Init
+        run: terraform init
+        working-directory: ./terraform
+
+      - name: Terraform Plan
+        run: terraform plan
+        working-directory: ./terraform

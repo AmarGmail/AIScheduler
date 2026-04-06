@@ -6,6 +6,5 @@ __pycache__/
 terraform/*.tfvars
 terraform/*.tfstate*
 terraform/.terraform/
-terraform/.terraform.lock.hcl
 terraform/*.tfstate
 terraform/*terraform_plan*
