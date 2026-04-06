@@ -5,3 +5,6 @@ __pycache__/
 .pytest_cache/
 terraform/*.tfvars
 terraform/*.tfstate*
+terraform/.terraform/
+terraform/.terraform.lock.hcl
+terraform/*.tfstate
