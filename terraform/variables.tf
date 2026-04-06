@@ -7,7 +7,7 @@ variable "repo_name" {
 variable "topics" {
   description = "AIScheduler -The list of topics to create in the repository."
   type        = list(string)
-  default     = ["python", "docker", "github-actions", "ai", "groq", "terraform"]
+  default     = ["python", "docker", "github-actions", "ai", "groq", "terraform", "test_topic"]
 
 }
 
