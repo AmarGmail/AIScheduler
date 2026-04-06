@@ -1,8 +1,8 @@
 name: Cleanup Old Images
 on:
   schedule:
-    - cron: '0 0 * * 0' # Every Sunday at midnight
-  workflow_dispatch:   # Manual trigger
+    - cron: '20 1 * * 0' # Every Sunday at midnight UTC
+  workflow_dispatch:   # Allows manual trigger from Actions tab
 
 jobs:
   delete-old-images:
@@ -11,7 +11,12 @@ jobs:
       packages: write
     steps:
       - name: Delete older images
-        uses: data-intuitive/reusable-workflows/.github/workflows/delete-old-images.yml@main  
+        uses: actions/delete-package-versions@v4
         with:
+          # Use the lowercase name of your package
           package-name: 'aischeduler'
-          keep-n-most-recent: 3
+          package-type: 'container'
+          # Best Practice: Keep a small buffer of versions
+          min-versions-to-keep: 3
+          # Clean up untagged 'ghost' images left by new builds
+          delete-only-untagged-versions: 'true'
