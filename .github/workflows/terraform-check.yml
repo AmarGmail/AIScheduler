@@ -11,9 +11,14 @@ on:
 jobs:
   terraform-plan:
     runs-on: ubuntu-latest
+    # Best Practice: Explicit permissions
+    permissions:
+      contents: read
+      pull-requests: write # For the provider to comment on the PR with the plan results
+      repository-projects: write # For the provider to create a project card with the plan results
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # For the provider
+      GITHUB_TOKEN: ${{ secrets.GH_PAT }} # For the provider
       # We need our Groq key for the plan because it's a required variable
       TF_VAR_groq_api_key: ${{ secrets.GROQ_API_KEY }}
 
